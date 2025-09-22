@@ -1,0 +1,31 @@
+# Build directory
+build/
+
+# Libraries backup (optional - uncomment if you don't want to version them)
+# backup_makefiles/
+
+# Old compilation files (just in case)
+*.obj
+*.out
+*.hex
+*.map
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+
+# VS Code files
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# pyOCD configuration and logs
+.pyocd/
+*.pyocd
+pyocd.log
+
+# MSPM0 SDK (if not using submodule)
+mspm0-sdk-backup/
