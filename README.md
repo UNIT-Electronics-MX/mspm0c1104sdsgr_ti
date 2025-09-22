@@ -38,7 +38,9 @@ make clean && make && make flash
 ```
 mspm0c1104sdsgr_ti/
 ├── mspm0c1104_template/       # Main project template
-│   ├── main.c                 # LED blink example (PA24)
+│   ├── src/                   # Source code directory
+│   │   ├── main.c             # LED blink example (PA24)
+│   │   └── README.md          # Source code documentation
 │   ├── Makefile              # Dynamic build system (English)
 │   ├── Makefile_ES           # Spanish version (backup)
 │   ├── libs/                 # Organized library modules
@@ -93,7 +95,7 @@ make MSPM0_SDK_INSTALL_DIR=/custom/path all
 
 ## 📚 Usage Examples
 
-### Basic LED Blink
+### Basic LED Blink (`src/main.c`)
 ```c
 #include "ti_msp_dl_config.h"
 
@@ -101,10 +103,10 @@ int main(void) {
     SYSCFG_DL_init();
     
     while (1) {
-        DL_GPIO_setPins(GPIO_LEDS_PORT, GPIO_LEDS_USER_LED_1_PIN);
-        DL_Common_delayCycles(16000000);  // ~1 second
-        DL_GPIO_clearPins(GPIO_LEDS_PORT, GPIO_LEDS_USER_LED_1_PIN);
-        DL_Common_delayCycles(16000000);  // ~1 second
+        DL_GPIO_setPins(GPIO_PA24_PORT, GPIO_PA24_PIN);
+        DL_Common_delayCycles(CPUCLK_FREQ / 8);  // 500ms on
+        DL_GPIO_clearPins(GPIO_PA24_PORT, GPIO_PA24_PIN);
+        DL_Common_delayCycles(CPUCLK_FREQ / 8);  // 500ms off
     }
 }
 ```
@@ -123,10 +125,16 @@ make flash-simple
 
 ## 🛠️ Development Workflow
 
-1. **Code**: Edit `main.c` or add modules in `libs/`
+1. **Code**: Edit `src/main.c` or add modules in `src/` and `libs/`
 2. **Build**: `make clean && make`
 3. **Flash**: `make flash`
 4. **Debug**: Reset button or `make reset`
+
+### Adding New Source Files
+1. Add `.c` files to `src/` directory
+2. Update `SOURCE_FILES` variable in Makefile
+3. Add corresponding `.h` files if needed
+4. Rebuild project
 
 ## 📋 pyOCD Configuration
 
@@ -164,11 +172,28 @@ For issues related to:
 - **pyOCD**: [pyOCD GitHub](https://github.com/pyocd/pyOCD)
 - **This Template**: Create an issue in this repository
 
+## 📄 License
+
+This project uses multiple licenses:
+
+- **Template Code**: [MIT License](LICENSE) - UNIT Electronics MX
+- **TI MSPM0 SDK**: TI Commercial + BSD-3-Clause - Texas Instruments  
+- **ARM CMSIS**: Apache-2.0 - ARM Limited
+
+See [LICENSES.md](LICENSES.md) for complete license information and compliance guidelines.
+
+### Quick License Summary
+✅ **Commercial use allowed**  
+✅ **Modification and distribution permitted**  
+⚠️ **Attribution required**  
+⚠️ **TI SDK only for TI MSPM0 devices**
+
 ## 🏷️ Version History
 
 - **v1.0**: Initial template with dynamic SDK detection
 - **v1.1**: Added pyOCD optimization and emergency programming
 - **v1.2**: Professional structure with official SDK submodule
+- **v1.3**: Added comprehensive licensing documentation
 
 ---
 

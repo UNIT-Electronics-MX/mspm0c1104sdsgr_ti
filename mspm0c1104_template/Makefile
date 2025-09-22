@@ -1,4 +1,12 @@
 # MSPM0C1104 Development Template - Makefile
+# 
+# Copyright (c) 2025 UNIT Electronics MX
+# Licensed under MIT License - see LICENSE file for details
+#
+# This build system uses TI MSPM0 SDK components which are licensed
+# under TI Commercial License and BSD-3-Clause License.
+# See LICENSES.md for complete licensing information.
+#
 # SDK Path - Automatic submodule detection
 MSPM0_SDK_INSTALL_DIR ?= $(shell if [ -d "../mspm0-sdk" ]; then echo "../mspm0-sdk"; elif [ -d "$(HOME)/Documents/mspm-/mspm0-sdk" ]; then echo "$(HOME)/Documents/mspm-/mspm0-sdk"; else echo "/usr/local/mspm0-sdk"; fi)
 
@@ -10,7 +18,7 @@ SIZE = arm-none-eabi-size
 
 # Project configuration
 PROJECT_NAME = mspm0c1104_template
-SOURCE_FILES = main.c libs/config/ti_msp_dl_config.c startup_mspm0c110x_gcc.c
+SOURCE_FILES = src/main.c libs/config/ti_msp_dl_config.c startup_mspm0c110x_gcc.c
 
 # Build directories
 BUILD_DIR = build
@@ -42,6 +50,7 @@ CFLAGS = \
     "-I$(MSPM0_SDK_INSTALL_DIR)/source/third_party/CMSIS/DSP/Include" \
     "-I$(MSPM0_SDK_INSTALL_DIR)/source" \
     -I. \
+    -Isrc \
     -Ilibs/config \
     -Ilibs/i2c \
     -Ilibs/display \
@@ -77,7 +86,7 @@ $(BUILD_DIR):
 	@mkdir -p $(OUTPUT_DIR)
 
 # Variable to search source files with VPATH
-VPATH = . libs/config libs/i2c libs/display libs/fonts
+VPATH = . src libs/config libs/i2c libs/display libs/fonts
 
 # Compile source files to objects
 $(OBJ_DIR)/%.obj: %.c | $(BUILD_DIR)

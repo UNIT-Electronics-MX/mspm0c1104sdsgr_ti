@@ -29,3 +29,7 @@ pyocd.log
 
 # MSPM0 SDK (if not using submodule)
 mspm0-sdk-backup/
+
+# License compliance files (keep these in version control)
+# LICENSE
+# LICENSES.md
