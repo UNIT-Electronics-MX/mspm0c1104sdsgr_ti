@@ -2,7 +2,7 @@
 
 A professional development template for Texas Instruments MSPM0C1104 microcontroller using the official TI MSPM0 SDK as a Git submodule.
 
-## 📋 Project Overview
+## Project Overview
 
 - **Microcontroller**: MSPM0C1104 (32KB Flash, 4KB RAM, Cortex-M0+)
 - **SDK**: TI MSPM0 SDK v2.06.00.05 (official submodule)
@@ -10,7 +10,7 @@ A professional development template for Texas Instruments MSPM0C1104 microcontro
 - **Programming**: pyOCD with verified flash sequences
 - **Build System**: Make with automatic SDK path detection
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -33,7 +33,7 @@ cd mspm0c1104sdsgr_ti/mspm0c1104_template
 make clean && make && make flash
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 mspm0c1104sdsgr_ti/
@@ -54,7 +54,7 @@ mspm0c1104sdsgr_ti/
 └── README.md                 # This file
 ```
 
-## 🔧 Build System Features
+## Build System Features
 
 ### Automatic SDK Detection
 
@@ -69,7 +69,7 @@ The Makefile automatically detects the SDK location:
 make help           # Show all available targets
 make all            # Build complete project
 make clean          # Clean generated files
-make flash          # Program with verified method ✅
+make flash          # Program with verified method (RECOMMENDED)
 make flash-emergency # Multiple methods for problematic cases
 make info           # Show project information
 make sdk-paths      # Show available SDK paths
@@ -81,7 +81,7 @@ make sdk-paths      # Show available SDK paths
 make MSPM0_SDK_INSTALL_DIR=/custom/path all
 ```
 
-## 🔌 Hardware Configuration
+## Hardware Configuration
 
 ### LED Example (PA24)
 - **Pin**: PA24 (GPIO)
@@ -93,7 +93,7 @@ make MSPM0_SDK_INSTALL_DIR=/custom/path all
 - **Method**: pyOCD with optimized flash sequences
 - **Target**: `mspm0c1104`
 
-## 📚 Usage Examples
+## Usage Examples
 
 ### Basic LED Blink (`src/main.c`)
 ```c
@@ -123,7 +123,7 @@ make flash-emergency
 make flash-simple
 ```
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 1. **Code**: Edit `src/main.c` or add modules in `src/` and `libs/`
 2. **Build**: `make clean && make`
@@ -136,7 +136,7 @@ make flash-simple
 3. Add corresponding `.h` files if needed
 4. Rebuild project
 
-## 📋 pyOCD Configuration
+## pyOCD Configuration
 
 The project includes optimized pyOCD settings for reliable programming:
 
@@ -146,15 +146,15 @@ pyocd flash -t mspm0c1104 --connect under-reset \
   firmware.hex
 ```
 
-## 📄 License Compliance
+## License Compliance
 
 This template uses the official TI MSPM0 SDK as a Git submodule, ensuring:
-- ✅ **No SDK modifications** (full compliance)
-- ✅ **Official licensing** (TI Commercial + BSD-3-Clause)
-- ✅ **Easy updates** (`git submodule update`)
-- ✅ **Professional structure**
+- **No SDK modifications** (full compliance)
+- **Official licensing** (TI Commercial + BSD-3-Clause)
+- **Easy updates** (`git submodule update`)
+- **Professional structure**
 
-## 🔄 SDK Updates
+## SDK Updates
 
 ```bash
 # Update SDK to latest version
@@ -165,14 +165,14 @@ git add mspm0-sdk
 git commit -m "Update MSPM0 SDK to latest version"
 ```
 
-## 📞 Support
+## Support
 
 For issues related to:
 - **MSPM0 SDK**: [TI Support](https://e2e.ti.com/)
 - **pyOCD**: [pyOCD GitHub](https://github.com/pyocd/pyOCD)
 - **This Template**: Create an issue in this repository
 
-## 📄 License
+## License
 
 This project uses multiple licenses:
 
@@ -183,12 +183,12 @@ This project uses multiple licenses:
 See [LICENSES.md](LICENSES.md) for complete license information and compliance guidelines.
 
 ### Quick License Summary
-✅ **Commercial use allowed**  
-✅ **Modification and distribution permitted**  
-⚠️ **Attribution required**  
-⚠️ **TI SDK only for TI MSPM0 devices**
+**Commercial use allowed**  
+**Modification and distribution permitted**  
+**Attribution required**  
+**TI SDK only for TI MSPM0 devices**
 
-## 🏷️ Version History
+## Version History
 
 - **v1.0**: Initial template with dynamic SDK detection
 - **v1.1**: Added pyOCD optimization and emergency programming

@@ -2,11 +2,11 @@
 
 This document provides comprehensive information about programming the MSPM0C1104 microcontroller using pyOCD.
 
-## 📋 Overview
+## Overview
 
 pyOCD is a Python-based debugger and programmer for ARM microcontrollers. This guide focuses on the specific configuration needed for reliable MSPM0C1104 programming.
 
-## 🔧 Installation
+## Installation
 
 ### Ubuntu/Debian
 ```bash
@@ -29,7 +29,7 @@ pip3 install --user pyocd
 pip install git+https://github.com/pyocd/pyOCD.git
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Recommended pyOCD Command (Verified Working)
 ```bash
@@ -52,7 +52,7 @@ pyocd flash -t mspm0c1104 --connect under-reset \
 - **ResetCatchSet**: Reset catch configuration
 - **ResetProcessor**: Processor reset sequence
 
-## 🚨 Common Issues and Solutions
+## Common Issues and Solutions
 
 ### Issue 1: "Could not halt device"
 **Symptoms**: Programming fails with halt errors
@@ -85,7 +85,7 @@ pyocd flash -t mspm0c1104 --connect under-reset \
 2. Software reset: `pyocd reset -t mspm0c1104`
 3. Power cycle the board
 
-## 🔄 Programming Methods
+## Programming Methods
 
 ### Method 1: Recommended (Makefile integration)
 ```bash
@@ -117,7 +117,7 @@ pyocd flash -t mspm0c1104 firmware.hex
 # Press reset button manually after programming
 ```
 
-## 📊 Programming Options
+## Programming Options
 
 ### Frequency Settings
 ```bash
@@ -155,7 +155,7 @@ pyocd flash -O reset_type=sw firmware.hex
 pyocd flash --no-reset firmware.hex
 ```
 
-## 🔍 Debugging Commands
+## Debugging Commands
 
 ### List connected devices
 ```bash
@@ -188,7 +188,7 @@ pyocd gdbserver -t mspm0c1104
 pyocd commander -t mspm0c1104
 ```
 
-## 📁 Configuration Files
+## Configuration Files
 
 ### Project-specific configuration (.pyocd.yaml)
 ```yaml
@@ -217,13 +217,13 @@ targets:
     connect_mode: under_reset
 ```
 
-## 🏷️ Version Compatibility
+## Version Compatibility
 
 ### Tested Versions
-- **pyOCD 0.37.0**: ✅ Fully compatible
-- **pyOCD 0.36.x**: ✅ Compatible  
-- **pyOCD 0.35.x**: ⚠️ May need adjustments
-- **pyOCD < 0.35**: ❌ Not recommended
+- **pyOCD 0.37.0**: Fully compatible
+- **pyOCD 0.36.x**: Compatible  
+- **pyOCD 0.35.x**: May need adjustments
+- **pyOCD < 0.35**: Not recommended
 
 ### Check your version
 ```bash
@@ -235,7 +235,7 @@ pyocd -V
 pip install --upgrade pyocd
 ```
 
-## 🛠️ Hardware Setup
+## Hardware Setup
 
 ### Required Hardware
 - **LaunchPad**: LP-MSPM0C1104 or compatible
@@ -267,7 +267,7 @@ pyocd list
 3. **Power cycle**: Disconnect and reconnect USB
 4. **Factory reset**: Use TI tools if available
 
-## 🔗 References
+## References
 
 - [pyOCD Documentation](https://pyocd.io/)
 - [TI MSPM0C1104 Datasheet](https://www.ti.com/product/MSPM0C1104)

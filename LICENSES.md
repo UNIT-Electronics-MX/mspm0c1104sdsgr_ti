@@ -2,7 +2,7 @@
 
 This project uses multiple components with different licenses. This document provides a comprehensive overview of all licensing requirements.
 
-## 📋 License Summary
+## License Summary
 
 | Component | License | Copyright | Usage |
 |-----------|---------|-----------|-------|
@@ -11,7 +11,7 @@ This project uses multiple components with different licenses. This document pro
 | **CMSIS** | Apache-2.0 | ARM Limited | ARM CMSIS headers and libraries |
 | **GNU Toolchain** | GPL-3.0 + Runtime Exception | Free Software Foundation | Compiler and linker (not affecting output) |
 
-## 🏷️ Template License (MIT)
+## Template License (MIT)
 
 ### Scope
 The following files and directories are licensed under MIT:
@@ -58,7 +58,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## 🏢 TI MSPM0 SDK License
+## TI MSPM0 SDK License
 
 ### Scope
 The MSPM0 SDK is included as a Git submodule and maintains its original licensing:
@@ -84,10 +84,10 @@ The TI MSPM0 SDK uses a **dual licensing** approach:
    - Standard BSD terms for certain libraries
 
 ### Key Points
-- ✅ **Commercial use allowed** with TI MSPM0 devices
-- ✅ **No royalties** for TI device usage
-- ✅ **Distribution permitted** when used with TI hardware
-- ⚠️ **Device restriction**: License tied to TI MSPM0 family usage
+- **Commercial use allowed** with TI MSPM0 devices
+- **No royalties** for TI device usage
+- **Distribution permitted** when used with TI hardware
+- **Device restriction**: License tied to TI MSPM0 family usage
 
 ### Compliance Requirements
 1. **Include license files**: Keep original SDK license files
@@ -95,7 +95,7 @@ The TI MSPM0 SDK uses a **dual licensing** approach:
 3. **Device binding**: Only use with TI MSPM0 devices
 4. **Unmodified SDK**: Use official SDK via Git submodule (recommended)
 
-## 🔧 ARM CMSIS License (Apache-2.0)
+## ARM CMSIS License (Apache-2.0)
 
 ### Scope
 ARM CMSIS components within the SDK:
@@ -108,10 +108,10 @@ mspm0-sdk/source/third_party/CMSIS/
 ```
 
 ### Key Points
-- ✅ **Commercial use allowed**
-- ✅ **Modification allowed**
-- ✅ **Distribution allowed**
-- ⚠️ **Attribution required**
+- **Commercial use allowed**
+- **Modification allowed**
+- **Distribution allowed**
+- **Attribution required**
 
 ## 🛠️ GNU Toolchain License
 
@@ -121,12 +121,12 @@ mspm0-sdk/source/third_party/CMSIS/
 - **Newlib C library**: Various licenses (mostly BSD-like)
 
 ### Key Points
-- ✅ **Output binaries are NOT affected** by GPL
-- ✅ **Commercial use of generated binaries allowed**
-- ✅ **No source code disclosure required** for your application
-- ✅ **Runtime Library Exception** protects your application
+- **Output binaries are NOT affected** by GPL
+- **Commercial use of generated binaries allowed**
+- **No source code disclosure required** for your application
+- **Runtime Library Exception** protects your application
 
-## 📄 Third-Party Components
+## Third-Party Components
 
 ### pyOCD
 - **License**: Apache-2.0
@@ -137,7 +137,7 @@ mspm0-sdk/source/third_party/CMSIS/
 - **Make**: GPL-3.0 (build tool only)
 - **Git**: GPL-2.0 (version control only)
 
-## 🚀 Distribution Guidelines
+## Distribution Guidelines
 
 ### For Template Users
 
@@ -162,24 +162,24 @@ mspm0-sdk/source/third_party/CMSIS/
 
 ### For Commercial Products
 
-#### ✅ You CAN:
+#### You CAN:
 - Use this template in commercial products
 - Modify and extend the template code
 - Distribute products based on this template
 - Keep your modifications proprietary (for template parts)
 
-#### ⚠️ You MUST:
+#### You MUST:
 - Include required copyright notices
 - Follow TI SDK licensing terms
 - Use only with TI MSPM0 devices (SDK requirement)
 - Include license attributions in documentation
 
-#### ❌ You CANNOT:
+#### You CANNOT:
 - Remove original copyright notices
 - Use TI SDK with non-TI devices
 - Claim ownership of TI or ARM IP
 
-## 📞 License Compliance Checklist
+## License Compliance Checklist
 
 ### Before Distribution:
 - [ ] Include `LICENSE` file (MIT for template)
@@ -195,7 +195,7 @@ mspm0-sdk/source/third_party/CMSIS/
 - [ ] Provide source code availability (if required)
 - [ ] Document any modifications to SDK components
 
-## 🔗 License References
+## License References
 
 ### Primary Licenses
 - **MIT License**: [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
