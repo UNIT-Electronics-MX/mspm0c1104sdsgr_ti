@@ -1,6 +1,5 @@
 /*
- * ti_msp_dl_config.c - PA24 Configuration SIMPLE (sin I2C)
- * Volver a la configuración básica que funcionaba
+ * ti_msp_dl_config.c - Blink Configuration for PA0, PA24, PA27
  */
 
 #include "ti_msp_dl_config.h"
@@ -21,10 +20,20 @@ void SYSCFG_DL_initPower(void)
 
 void SYSCFG_DL_GPIO_init(void)
 {
-    /* Configure PA24 - CONFIGURACIÓN EXACTA COMO LOS EJEMPLOS DE TI */
+    /* Configure PA0 como salida digital (Open Drain con pull-up externa) */
+    DL_GPIO_initDigitalOutput(GPIO_PA0_IOMUX);
+    DL_GPIO_clearPins(GPIO_PA0_PORT, GPIO_PA0_PIN);
+    DL_GPIO_enableOutput(GPIO_PA0_PORT, GPIO_PA0_PIN);
+    
+    /* Configure PA24 como salida digital */
     DL_GPIO_initDigitalOutput(GPIO_PA24_IOMUX);
     DL_GPIO_clearPins(GPIO_PA24_PORT, GPIO_PA24_PIN);
     DL_GPIO_enableOutput(GPIO_PA24_PORT, GPIO_PA24_PIN);
+    
+    /* Configure PA27 como salida digital */
+    DL_GPIO_initDigitalOutput(GPIO_PA27_IOMUX);
+    DL_GPIO_clearPins(GPIO_PA27_PORT, GPIO_PA27_PIN);
+    DL_GPIO_enableOutput(GPIO_PA27_PORT, GPIO_PA27_PIN);
 }
 
 void SYSCFG_DL_SYSCTL_init(void)

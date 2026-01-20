@@ -1,0 +1,66 @@
+/*
+ * ti_msp_dl_config.h - UART GPIO Control Configuration
+ * PA24 = UART RX, PA27 = UART TX
+ * PA1  = Button Input (with pull-up)
+ * PA0  = LED Output (Open Drain)
+ */
+#ifndef ti_msp_dl_config_h
+#define ti_msp_dl_config_h
+
+#define CONFIG_LP_MSPM0C1104
+
+/* UART defines */
+#define UART_INST                                                   UART0
+#define UART_INST_IRQHandler                             UART0_IRQHandler
+#define UART_INST_INT_IRQN                                 UART0_INT_IRQn
+#define GPIO_UART_TX_PORT                                          GPIOA
+#define GPIO_UART_TX_PIN                               DL_GPIO_PIN_27
+#define GPIO_UART_IOMUX_TX                              (IOMUX_PINCM28)
+#define GPIO_UART_IOMUX_TX_FUNC              IOMUX_PINCM28_PF_UART0_TX
+#define GPIO_UART_RX_PORT                                          GPIOA
+#define GPIO_UART_RX_PIN                               DL_GPIO_PIN_24
+#define GPIO_UART_IOMUX_RX                              (IOMUX_PINCM25)
+#define GPIO_UART_IOMUX_RX_FUNC              IOMUX_PINCM25_PF_UART0_RX
+
+/* GPIO defines */
+#define GPIO_BUTTON_PORT                                       GPIOA
+#define GPIO_BUTTON_PIN                                 DL_GPIO_PIN_1
+#define GPIO_BUTTON_IOMUX                                (IOMUX_PINCM2)
+#define GPIO_LED_PORT                                          GPIOA
+#define GPIO_LED_PIN                                    DL_GPIO_PIN_0
+#define GPIO_LED_IOMUX                                   (IOMUX_PINCM1)
+
+#if defined(__ti_version__) || defined(__TI_COMPILER_VERSION__)
+#define SYSCONFIG_WEAK __attribute__((weak))
+#elif defined(__IAR_SYSTEMS_ICC__)
+#define SYSCONFIG_WEAK __weak
+#elif defined(__GNUC__)
+#define SYSCONFIG_WEAK __attribute__((weak))
+#endif
+
+#include <ti/devices/msp/msp.h>
+#include <ti/driverlib/driverlib.h>
+#include <ti/driverlib/m0p/dl_core.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* clang-format off */
+#define POWER_STARTUP_DELAY                     (16)
+#define CPUCLK_FREQ                         24000000
+/* clang-format on */
+
+void SYSCFG_DL_init(void);
+void SYSCFG_DL_initPower(void);
+void SYSCFG_DL_GPIO_init(void);
+void SYSCFG_DL_SYSCTL_init(void);
+void SYSCFG_DL_UART_init(void);
+
+bool dl_tamper_check_status(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* ti_msp_dl_config_h */
