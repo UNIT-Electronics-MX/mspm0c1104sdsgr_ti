@@ -4,12 +4,13 @@
  * Configuración:
  *   PA24 (PINCM25) - UART RX
  *   PA27 (PINCM28) - UART TX
+ *   PA0  (PINCM1)  - LED (Open Drain - requiere pull-up externo 10kΩ)
  *   Baud Rate: 115200
  *   8N1 (8 bits, sin paridad, 1 bit de parada)
  *
  * Funcionamiento:
  *   - Envía mensajes continuamente por UART
- *   - Muestra contador incremental
+ *   - LED parpadea cada 500ms para validar funcionamiento
  *   - Presiona 's' para detener el loop
  */
 
@@ -29,6 +30,7 @@ int main(void)
     char buffer[128];
     uint8_t received;
     bool running = true;
+    bool led_state = false;
     
     /* Inicializar hardware */
     SYSCFG_DL_init();
@@ -52,7 +54,8 @@ int main(void)
     UART_SendString(buffer);
     
     UART_SendString("Baud Rate: 115200\r\n");
-    UART_SendString("PA24=RX, PA27=TX\r\n\r\n");
+    UART_SendString("PA24=RX, PA27=TX\r\n");
+    UART_SendString("PA0=LED (Open Drain)\r\n\r\n");
     UART_SendString("Press 's' to stop loop\r\n");
     UART_SendString("====================================\r\n\r\n");
     
@@ -75,6 +78,14 @@ int main(void)
         
         /* Enviar UID solo si está activo */
         if (running) {
+            /* Toggle LED */
+            led_state = !led_state;
+            if (led_state) {
+                DL_GPIO_setPins(GPIOA, GPIO_LED_PIN);
+            } else {
+                DL_GPIO_clearPins(GPIOA, GPIO_LED_PIN);
+            }
+            
             snprintf(buffer, sizeof(buffer), 
                      "UID: %08lX-%08lX-%08lX\r\n", 
                      traceid, deviceid, userid);
