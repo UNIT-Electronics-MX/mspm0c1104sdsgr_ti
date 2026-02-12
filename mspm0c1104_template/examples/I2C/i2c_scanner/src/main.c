@@ -110,8 +110,7 @@ int main(void)
 void UART_SendString(const char *str)
 {
     while (*str) {
-        while (DL_UART_Main_isBusy(UART_INST));
-        DL_UART_Main_transmitData(UART_INST, *str++);
+        DL_UART_Main_transmitDataBlocking(UART_INST, *str++);
     }
 }
 

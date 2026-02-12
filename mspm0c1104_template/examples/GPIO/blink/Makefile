@@ -172,12 +172,12 @@ flash-reset: $(TARGET_HEX)
 	@sleep 1
 	@echo "=== ✅ Programming with multiple resets complete ==="
 
-# Manual microcontroller reset
+# Manual microcontroller reset (with disabled debug sequences)
 reset:
 	@echo "=== MSPM0C1104 Reset ==="
-	-pyocd reset --soft || echo "Soft reset failed, trying normal reset..."
-	@sleep 0.5
-	-pyocd reset || echo "pyOCD reset failed - use physical reset button"
+	pyocd reset -t mspm0c1104 \
+		-O pack.debug_sequences.disabled_sequences=ResetSystem,ResetHWReset,ResetCatchSet,ResetProcessor
+	@echo "=== ✅ Reset complete ==="
 
 # Project information
 info: $(TARGET)
