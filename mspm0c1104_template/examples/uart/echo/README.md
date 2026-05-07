@@ -42,16 +42,29 @@ The program:
 cd examples/uart/echo
 
 # Build
-make clean && make
+cmake --preset ninja-debug
+cmake --build --preset build-debug
 
 # Flash
-make flash
+cmake --build build --target flash
 
 # Clean
-make clean
+cmake --build build --target clean
 ```
 
-This example currently uses its local `Makefile`. The top-level `mspm0c1104_template` project uses CMake + Ninja.
+Windows:
+
+```bash
+cmake --preset ninja-windows
+cmake --build --preset build-windows
+cmake --build build-windows --target flash
+```
+
+Legacy wrapper:
+
+```bash
+make clean && make && make flash
+```
 
 ## Testing
 
@@ -72,6 +85,8 @@ screen /dev/ttyUSB0 115200
 
 ```
 echo/
+├── CMakeLists.txt
+├── CMakePresets.json
 ├── Makefile
 ├── README.md
 ├── build/

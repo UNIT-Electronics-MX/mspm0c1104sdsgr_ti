@@ -8,7 +8,9 @@ All examples follow the same directory structure:
 
 ```
 example/
-├── Makefile               # Standalone build script for the example
+├── CMakeLists.txt         # Build definition (CMake)
+├── CMakePresets.json      # Build presets (debug/release/windows)
+├── Makefile               # Legacy wrapper over CMake
 ├── README.md              # Specific documentation
 ├── build/                 # Generated files (compilation)
 │   ├── obj/              # Object files (.obj)
@@ -83,19 +85,39 @@ Reference documentation for using PA1 when NRST is enabled by default.
 
 ## Building
 
-Each example currently builds independently using its local `Makefile`:
+Each executable example can be built directly with CMake + Ninja:
+
+```bash
+cd examples/[category]/[example]
+cmake --preset ninja-debug
+cmake --build --preset build-debug
+```
+
+On Windows:
+
+```bash
+cd examples/[category]/[example]
+cmake --preset ninja-windows
+cmake --build --preset build-windows
+```
+
+The `Makefile` is still available as a compatibility wrapper:
 
 ```bash
 cd examples/[category]/[example]
 make clean && make
 ```
 
-The main project template uses CMake + Ninja. These standalone examples have not yet been migrated to CMake presets.
-
 ## Flashing
 
 ```bash
-make flash
+cmake --build build --target flash
+```
+
+Windows:
+
+```bash
+cmake --build build-windows --target flash
 ```
 
 ## Cleaning
@@ -123,6 +145,7 @@ Use lowercase directory names to match the current repository layout.
 
 ## Notes
 
-- Example Makefiles automatically search for SDK at `../../../../mspm0-sdk/`
+- CMake examples automatically search for SDK at `../../../../mspm0-sdk/`
+- If `pyocd` is not found during configure, `flash` and `reset` targets are still created and fail with a clear message.
 - Examples share the same linker script and startup code
 - Hardware configuration is modularized in `libs/config/`

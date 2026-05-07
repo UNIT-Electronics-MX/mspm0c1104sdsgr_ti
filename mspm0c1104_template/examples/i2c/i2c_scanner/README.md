@@ -35,10 +35,24 @@ Escanea el bus I2C en busca de dispositivos conectados y reporta las direcciones
 
 ```bash
 cd examples/i2c/i2c_scanner
-make clean && make && make flash
+cmake --preset ninja-debug
+cmake --build --preset build-debug
+cmake --build build --target flash
 ```
 
-Este ejemplo actualmente usa su `Makefile` local. El proyecto principal `mspm0c1104_template` usa CMake + Ninja.
+Windows:
+
+```bash
+cmake --preset ninja-windows
+cmake --build --preset build-windows
+cmake --build build-windows --target flash
+```
+
+Compatibilidad con wrapper:
+
+```bash
+make clean && make && make flash
+```
 
 ## Salida Esperada (UART)
 

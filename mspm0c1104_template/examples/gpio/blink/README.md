@@ -20,15 +20,33 @@ PA0 is an Open Drain pin and requires an external pull-up resistor (10kΩ recomm
 
 ```bash
 cd examples/gpio/blink
-make clean && make
+cmake --preset ninja-debug
+cmake --build --preset build-debug
 ```
 
-This example currently uses its local `Makefile`. The top-level `mspm0c1104_template` project uses CMake + Ninja.
+On Windows:
+
+```bash
+cmake --preset ninja-windows
+cmake --build --preset build-windows
+```
+
+Legacy wrapper:
+
+```bash
+make clean && make
+```
 
 ## Flashing
 
 ```bash
-make flash
+cmake --build build --target flash
+```
+
+Windows:
+
+```bash
+cmake --build build-windows --target flash
 ```
 
 ## Operation
@@ -43,6 +61,8 @@ make flash
 
 ```
 blink/
+├── CMakeLists.txt
+├── CMakePresets.json
 ├── Makefile
 ├── README.md
 ├── build/
