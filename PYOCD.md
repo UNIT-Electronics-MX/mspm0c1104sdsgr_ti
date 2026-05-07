@@ -87,9 +87,9 @@ pyocd flash -t mspm0c1104 --connect under-reset \
 
 ## Programming Methods
 
-### Method 1: Recommended (Makefile integration)
+### Method 1: Recommended (CMake integration)
 ```bash
-make flash
+cmake --build build --target flash
 ```
 
 ### Method 2: Direct command

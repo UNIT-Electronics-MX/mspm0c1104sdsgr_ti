@@ -1,11 +1,17 @@
 /*
  * ti_msp_dl_config.h - UART Echo Configuration
  * PA24 = UART RX, PA27 = UART TX
+ * PA0 = LED (Open Drain)
  */
 #ifndef ti_msp_dl_config_h
 #define ti_msp_dl_config_h
 
 #define CONFIG_LP_MSPM0C1104
+
+/* LED defines */
+#define GPIO_LED_PORT                                              GPIOA
+#define GPIO_LED_PIN                                    DL_GPIO_PIN_0
+#define GPIO_LED_IOMUX                                  (IOMUX_PINCM1)
 
 /* UART defines */
 #define UART_INST                                                   UART0

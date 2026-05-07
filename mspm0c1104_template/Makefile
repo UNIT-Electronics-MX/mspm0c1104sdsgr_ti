@@ -1,263 +1,119 @@
-# MSPM0C1104 Development Template - Makefile
-# 
-# Copyright (c) 2025 UNIT Electronics MX
-# Licensed under MIT License - see LICENSE file for details
+# MSPM0C1104 Development Template - Makefile wrapper
 #
-# This build system uses TI MSPM0 SDK components which are licensed
-# under TI Commercial License and BSD-3-Clause License.
-# See LICENSES.md for complete licensing information.
-#
-# SDK Path - Automatic submodule detection
-MSPM0_SDK_INSTALL_DIR ?= $(shell if [ -d "../mspm0-sdk" ]; then echo "../mspm0-sdk"; elif [ -d "$(HOME)/Documents/mspm-/mspm0-sdk" ]; then echo "$(HOME)/Documents/mspm-/mspm0-sdk"; else echo "/usr/local/mspm0-sdk"; fi)
+# Legacy Make entrypoint preserved for users who still prefer `make`.
+# The actual build is driven by CMake + Ninja.
 
-# Compiler tools
-CC = arm-none-eabi-gcc
-LNK = arm-none-eabi-gcc
-OBJCOPY = arm-none-eabi-objcopy
-SIZE = arm-none-eabi-size
+PROJECT_NAME := mspm0c1104_template
+BUILD_DIR ?= build
+BUILD_DIR_RELEASE ?= build-release
+BUILD_DIR_WINDOWS ?= build-windows
+TOOLCHAIN_FILE ?= cmake/arm-none-eabi-gcc.cmake
+MSPM0_SDK_INSTALL_DIR ?=
+DEBUG_PRESET := ninja-debug
+RELEASE_PRESET := ninja-release
+WINDOWS_PRESET := ninja-windows
 
-# Project configuration
-PROJECT_NAME = mspm0c1104_template
-SOURCE_FILES = src/main.c libs/config/ti_msp_dl_config.c startup_mspm0c110x_gcc.c
+CONFIGURE_CMD = cmake -S . -B $(BUILD_DIR) -G Ninja -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
+CONFIGURE_RELEASE_CMD = cmake -S . -B $(BUILD_DIR_RELEASE) -G Ninja -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release
+CONFIGURE_WINDOWS_CMD = cmake -S . -B $(BUILD_DIR_WINDOWS) -G Ninja -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Debug
 
-# Build directories
-BUILD_DIR = build
-OBJ_DIR = $(BUILD_DIR)/obj
-OUTPUT_DIR = $(BUILD_DIR)/output
+ifneq ($(strip $(MSPM0_SDK_INSTALL_DIR)),)
+CONFIGURE_CMD += -DMSPM0_SDK_INSTALL_DIR=$(MSPM0_SDK_INSTALL_DIR)
+CONFIGURE_RELEASE_CMD += -DMSPM0_SDK_INSTALL_DIR=$(MSPM0_SDK_INSTALL_DIR)
+CONFIGURE_WINDOWS_CMD += -DMSPM0_SDK_INSTALL_DIR=$(MSPM0_SDK_INSTALL_DIR)
+endif
 
-# Objects to compile (now in build/obj/)
-OBJECTS = $(addprefix $(OBJ_DIR)/, $(notdir $(SOURCE_FILES:.c=.obj)))
-TARGET = $(OUTPUT_DIR)/$(PROJECT_NAME).out
-TARGET_HEX = $(OUTPUT_DIR)/$(PROJECT_NAME).hex
+TARGET_HEX = $(BUILD_DIR)/output/$(PROJECT_NAME).hex
+PYOCD = pyocd
 
-# Compiler flags for MSPM0C1104 with CMSIS
-CFLAGS = \
-    -DDeviceFamily_MSPM0C110X \
-    -D__MSPM0C1104__ \
-    -DARM_MATH_CM0 \
-    -O2 \
-    -mcpu=cortex-m0plus \
-    -march=armv6-m \
-    -mthumb \
-    -std=c99 \
-    -mfloat-abi=soft \
-    -ffunction-sections \
-    -fdata-sections \
-    -g \
-    -gstrict-dwarf \
-    -Wall \
-    "-I$(MSPM0_SDK_INSTALL_DIR)/source/third_party/CMSIS/Core/Include" \
-    "-I$(MSPM0_SDK_INSTALL_DIR)/source/third_party/CMSIS/DSP/Include" \
-    "-I$(MSPM0_SDK_INSTALL_DIR)/source" \
-    -I. \
-    -Isrc \
-    -Ilibs/config \
-    -Ilibs/i2c \
-    -Ilibs/display \
-    -Ilibs/fonts
+.PHONY: all configure configure-release configure-windows clean flash flash-simple flash-reset flash-soft flash-no-reset flash-emergency reset info help sdk-paths
 
-# Linker flags
-LFLAGS = \
-    "-L$(MSPM0_SDK_INSTALL_DIR)/source/third_party/CMSIS/DSP/lib/gcc/m0p" \
-    -l:arm_cortexM0l_math.a \
-    "-L$(MSPM0_SDK_INSTALL_DIR)/source/ti/driverlib/lib/gcc/m0p/mspm0g1x0x_g3x0x" \
-    -l:driverlib.a \
-    "-Wl,-Map,$(OUTPUT_DIR)/$(PROJECT_NAME).map" \
-    "-L$(MSPM0_SDK_INSTALL_DIR)/source" \
-    -Wl,-T,device_linker.lds \
-    -march=armv6-m \
-    -mthumb \
-    -static \
-    -Wl,--gc-sections \
-    -lgcc \
-    -lc \
-    -lm \
-    --specs=nano.specs \
-    --specs=nosys.specs
+all: configure
+	cmake --build $(BUILD_DIR)
 
-# Main rules
-all: $(BUILD_DIR) $(TARGET) $(TARGET_HEX)
-	@echo "Build complete!"
-	@$(SIZE) $(TARGET)
+configure:
+	@if [ -z "$(strip $(MSPM0_SDK_INSTALL_DIR))" ]; then \
+		cmake --preset $(DEBUG_PRESET); \
+	else \
+		$(CONFIGURE_CMD); \
+	fi
 
-# Create build directories
-$(BUILD_DIR):
-	@mkdir -p $(OBJ_DIR)
-	@mkdir -p $(OUTPUT_DIR)
+configure-release:
+	@if [ -z "$(strip $(MSPM0_SDK_INSTALL_DIR))" ]; then \
+		cmake --preset $(RELEASE_PRESET); \
+	else \
+		$(CONFIGURE_RELEASE_CMD); \
+	fi
 
-# Variable to search source files with VPATH
-VPATH = . src libs/config libs/i2c libs/display libs/fonts
+configure-windows:
+	@if [ -z "$(strip $(MSPM0_SDK_INSTALL_DIR))" ]; then \
+		cmake --preset $(WINDOWS_PRESET); \
+	else \
+		$(CONFIGURE_WINDOWS_CMD); \
+	fi
 
-# Compile source files to objects
-$(OBJ_DIR)/%.obj: %.c | $(BUILD_DIR)
-	@echo "Compiling $<"
-	@$(CC) $(CFLAGS) $< -c -o $@
-
-# Link and create executable
-$(TARGET): $(OBJECTS)
-	@echo "Linking $@"
-	@$(LNK) $(OBJECTS) $(LFLAGS) -o $(TARGET)
-
-# Create HEX file for programming
-$(TARGET_HEX): $(TARGET)
-	@echo "Creating HEX file"
-	@$(OBJCOPY) -O ihex $(TARGET) $(TARGET_HEX)
-
-# Clean generated files
 clean:
-	@echo "Cleaning project"
-	@rm -rf $(BUILD_DIR)
-	@rm -f *.obj *.out *.map *.hex
+	cmake -E rm -rf $(BUILD_DIR)
+	cmake -E rm -rf $(BUILD_DIR_RELEASE)
+	cmake -E rm -rf $(BUILD_DIR_WINDOWS)
+	cmake -E rm -f *.obj *.out *.map *.hex
 
-# MAIN PROGRAMMING (verified working method)
-flash: $(TARGET_HEX)
-	@echo "=== Programming MSPM0C1104 with verified method ==="
-	@echo "File: $(TARGET_HEX)"
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	pyocd flash -t mspm0c1104 --connect under-reset \
-		-O pack.debug_sequences.disabled_sequences=ResetSystem,ResetHWReset,ResetCatchSet,ResetProcessor \
-		$(TARGET_HEX)
-	@echo "=== ✅ Programming complete - PA24 should be blinking ==="
+flash: all
+	cmake --build $(BUILD_DIR) --target flash
 
-# EMERGENCY PROGRAMMING (multiple methods - for problematic cases)
-flash-emergency: $(TARGET_HEX)
-	@echo "=== Programming MSPM0C1104 with Multiple Methods ==="
-	@echo "File: $(TARGET_HEX)"
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	@echo "Method 1: Programming with auto-detection and sector erase..."
-	-pyocd flash -O frequency=100000 --erase=sector $(TARGET_HEX) || echo "Method 1 failed"
-	@echo "Method 2: Programming with specific target, no reset..."
-	-pyocd flash -t mspm0c1104 -O frequency=100000 --no-reset $(TARGET_HEX) || echo "Method 2 failed"
-	@echo "Method 3: Programming with basic auto-detection..."
-	pyocd flash -O frequency=100000 $(TARGET_HEX) || echo "Method 3 failed - using flash-emergency"
-	@echo "Verifying programming..."
-	@sleep 1
-	-pyocd reset || echo "Reset failed - press reset button manually"
-	@echo "=== ✅ Programming complete - PA24 should be blinking ==="
-	@echo "If not blinking, press the reset button on the board"
+flash-emergency: all
+	$(PYOCD) flash -O frequency=100000 --erase=sector $(TARGET_HEX) || echo "Method 1 failed"
+	-$(PYOCD) flash -t mspm0c1104 -O frequency=100000 --no-reset $(TARGET_HEX) || echo "Method 2 failed"
+	$(PYOCD) flash -O frequency=100000 $(TARGET_HEX) || echo "Method 3 failed"
+	-$(PYOCD) reset || echo "Reset failed - press reset button manually"
 
-# SIMPLE PROGRAMMING (no automatic reset)
-flash-simple: $(TARGET_HEX)
-	@echo "=== Simple Programming (requires manual reset) ==="
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	pyocd flash \
-		-t mspm0c1104 \
-		$(TARGET_HEX)
-	@echo "=== Programming complete - PRESS THE RESET BUTTON ON THE BOARD ==="
+flash-simple: all
+	$(PYOCD) flash -t mspm0c1104 $(TARGET_HEX)
 
-# PROGRAMMING WITH FORCED RESET
-flash-reset: $(TARGET_HEX)
-	@echo "=== Programming with Multiple Resets ==="
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	@echo "Initial reset..."
-	-pyocd reset -t mspm0c1104 || echo "Initial reset failed (normal)"
-	@sleep 1
-	@echo "Programming..."
-	pyocd flash \
-		-t mspm0c1104 \
-		--connect under-reset \
-		-O reset_type=hw \
-		$(TARGET_HEX)
-	@echo "Final reset..."
-	@sleep 1
-	-pyocd reset -t mspm0c1104 || echo "Final reset failed"
-	@sleep 1
-	@echo "=== ✅ Programming with multiple resets complete ==="
+flash-reset: all
+	-$(PYOCD) reset -t mspm0c1104 || echo "Initial reset failed"
+	$(PYOCD) flash -t mspm0c1104 --connect under-reset -O reset_type=hw $(TARGET_HEX)
+	-$(PYOCD) reset -t mspm0c1104 || echo "Final reset failed"
 
-# Manual microcontroller reset
+flash-soft: all
+	$(PYOCD) flash -t mspm0c1104 -O reset_type=sw -O frequency=500000 $(TARGET_HEX)
+	-$(PYOCD) reset -t mspm0c1104 --soft || echo "Soft reset failed"
+
+flash-no-reset: all
+	$(PYOCD) flash -t mspm0c1104 --no-reset $(TARGET_HEX)
+
 reset:
-	@echo "=== MSPM0C1104 Reset ==="
-	-pyocd reset --soft || echo "Soft reset failed, trying normal reset..."
-	@sleep 0.5
-	-pyocd reset || echo "pyOCD reset failed - use physical reset button"
+	cmake --build $(BUILD_DIR) --target reset
 
-# Project information
-info: $(TARGET)
-	@echo "=== Project Information ==="
+info: all
 	@echo "Project: $(PROJECT_NAME)"
-	@echo "Source files: $(SOURCE_FILES)"
-	@echo "Device: MSPM0C1104"
-	@echo "SDK Path: $(MSPM0_SDK_INSTALL_DIR)"
-	@echo ""
-	@echo "=== Binary size ==="
-	@$(SIZE) $(TARGET)
+	@echo "Build directory: $(BUILD_DIR)"
+	@echo "Firmware: $(TARGET_HEX)"
+	@echo "SDK Path override: $(if $(strip $(MSPM0_SDK_INSTALL_DIR)),$(MSPM0_SDK_INSTALL_DIR),auto-detect)"
 
-# Help
 help:
-	@echo "=== MSPM0C1104 Development Template - Makefile ==="
+	@echo "MSPM0C1104 Development Template - Makefile wrapper"
 	@echo ""
 	@echo "Main targets:"
-	@echo "  all           - Build complete project"
-	@echo "  clean         - Clean generated files"
-	@echo "  flash         - Program with verified method (RECOMMENDED) ✅"
-	@echo "  flash-emergency - Multiple methods for problematic cases"
-	@echo "  reset         - Manual microcontroller reset"
-	@echo "  info          - Project information"
-	@echo "  sdk-paths     - Show available SDK paths"
-	@echo "  help          - This help"
+	@echo "  make all              - Configure and build with CMake + Ninja"
+	@echo "  make flash            - Build and program with the recommended pyOCD flow"
+	@echo "  make configure        - Configure the debug build directory"
+	@echo "  make configure-release - Configure the release build directory"
+	@echo "  make configure-windows - Configure a Windows-oriented build directory"
+	@echo "  make clean            - Remove CMake build directories"
+	@echo "  make sdk-paths        - Show SDK override usage"
 	@echo ""
 	@echo "Typical usage:"
-	@echo "  make clean && make && make flash"
+	@echo "  make clean && make all && make flash"
 	@echo ""
-	@echo "NOTE: 'make flash' command uses the verified method:"
-	@echo "  pyocd flash -t mspm0c1104 --connect under-reset \\"
-	@echo "    -O pack.debug_sequences.disabled_sequences=..."
-
-# Show available SDK paths
-sdk-paths:
-	@echo "=== Automatic SDK Detection ==="
-	@echo "Current detected path: $(MSPM0_SDK_INSTALL_DIR)"
-	@echo ""
-	@echo "=== Verified paths ==="
-	@if [ -d "../mspm0-sdk" ]; then echo "✅ ../mspm0-sdk (submodule)"; else echo "❌ ../mspm0-sdk (not found)"; fi
-	@if [ -d "$(HOME)/Documents/mspm-/mspm0-sdk" ]; then echo "✅ $(HOME)/Documents/mspm-/mspm0-sdk (local installation)"; else echo "❌ $(HOME)/Documents/mspm-/mspm0-sdk (not found)"; fi
-	@if [ -d "/usr/local/mspm0-sdk" ]; then echo "✅ /usr/local/mspm0-sdk (system)"; else echo "❌ /usr/local/mspm0-sdk (not found)"; fi
-	@echo ""
-	@echo "To use a specific path:"
+	@echo "Optional SDK override:"
 	@echo "  make MSPM0_SDK_INSTALL_DIR=/custom/path all"
 
-.PHONY: all clean flash flash-simple flash-reset reset info help flash-soft flash-no-reset flash-emergency sdk-paths
-
-# SOFT RESET PROGRAMMING
-flash-soft: $(TARGET_HEX)
-	@echo "=== Programming with Soft Reset ==="
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	@echo "Programming with soft reset..."
-	pyocd flash \
-		-t mspm0c1104 \
-		-O reset_type=sw \
-		-O frequency=500000 \
-		$(TARGET_HEX)
-	@echo "Soft reset..."
-	@sleep 1
-	-pyocd reset -t mspm0c1104 --soft || echo "Soft reset failed"
-	@echo "=== ✅ Programming with soft reset complete ==="
-
-# BASIC PROGRAMMING WITHOUT RESET (MORE COMPATIBLE)
-flash-no-reset: $(TARGET_HEX)
-	@echo "=== Programming without Reset (more compatible) ==="
-	@if [ ! -f "$(TARGET_HEX)" ]; then \
-		echo "Error: $(TARGET_HEX) does not exist. Run 'make all' first."; \
-		exit 1; \
-	fi
-	@echo "Programming without automatic reset..."
-	pyocd flash \
-		-t mspm0c1104 \
-		-O frequency=500000 \
-		$(TARGET_HEX)
-	@echo "=== ✅ Programming complete - PRESS THE RESET BUTTON MANUALLY ==="
+sdk-paths:
+	@echo "CMake SDK detection order:"
+	@echo "  1. MSPM0_SDK_INSTALL_DIR make variable / CMake cache variable"
+	@echo "  2. MSPM0_SDK_INSTALL_DIR environment variable"
+	@echo "  3. ../mspm0-sdk"
+	@echo "  4. $$HOME/Documents/mspm-/mspm0-sdk"
+	@echo "  5. /usr/local/mspm0-sdk"
+	@echo "  6. Windows paths under USERPROFILE and C:/ti/mspm0-sdk"

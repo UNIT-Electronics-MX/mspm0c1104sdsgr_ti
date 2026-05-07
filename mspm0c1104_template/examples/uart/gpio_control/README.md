@@ -39,14 +39,31 @@ The program:
 ## Building and Flashing
 
 ```bash
+cd examples/uart/gpio_control
+
 # Build
-make
+cmake --preset ninja-debug
+cmake --build --preset build-debug
 
 # Flash
-make flash
+cmake --build build --target flash
 
 # Clean
-make clean
+cmake --build build --target clean
+```
+
+Windows:
+
+```bash
+cmake --preset ninja-windows
+cmake --build --preset build-windows
+cmake --build build-windows --target flash
+```
+
+Legacy wrapper:
+
+```bash
+make clean && make && make flash
 ```
 
 ## Testing
@@ -68,6 +85,8 @@ screen /dev/ttyUSB0 115200
 
 ```
 echo/
+├── CMakeLists.txt
+├── CMakePresets.json
 ├── Makefile
 ├── README.md
 ├── build/
