@@ -34,9 +34,11 @@ Escanea el bus I2C en busca de dispositivos conectados y reporta las direcciones
 ## Compilar y Flashear
 
 ```bash
-cd examples/I2C/i2c_scanner
+cd examples/i2c/i2c_scanner
 make clean && make && make flash
 ```
+
+Este ejemplo actualmente usa su `Makefile` local. El proyecto principal `mspm0c1104_template` usa CMake + Ninja.
 
 ## Salida Esperada (UART)
 

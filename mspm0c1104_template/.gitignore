@@ -1,5 +1,6 @@
 # Build directory
 build/
+build-release/
 
 # Libraries backup (optional - uncomment if you don't want to version them)
 # backup_makefiles/

@@ -39,8 +39,10 @@ The program:
 ## Building and Flashing
 
 ```bash
+cd examples/uart/echo
+
 # Build
-make
+make clean && make
 
 # Flash
 make flash
@@ -48,6 +50,8 @@ make flash
 # Clean
 make clean
 ```
+
+This example currently uses its local `Makefile`. The top-level `mspm0c1104_template` project uses CMake + Ninja.
 
 ## Testing
 

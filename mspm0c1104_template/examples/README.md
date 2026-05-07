@@ -8,7 +8,7 @@ All examples follow the same directory structure:
 
 ```
 example/
-├── Makefile               # Build system
+├── Makefile               # Standalone build script for the example
 ├── README.md              # Specific documentation
 ├── build/                 # Generated files (compilation)
 │   ├── obj/              # Object files (.obj)
@@ -34,9 +34,9 @@ Synchronized blinking of three GPIO pins (PA0, PA24, PA27).
 - Uses CPU cycle delays
 - Open Drain pin handling (PA0)
 
-**Location:** `GPIO/blink/`
+**Location:** `gpio/blink/`
 
-### UART/echo
+### uart/echo
 UART serial communication demonstration with interactive control.
 
 **Features:**
@@ -50,16 +50,47 @@ UART serial communication demonstration with interactive control.
 - PA24 (PINCM25): UART0_RX
 - PA27 (PINCM28): UART0_TX
 
-**Location:** `UART/echo/`
+**Location:** `uart/echo/`
+
+### uart/gpio_control
+UART-controlled GPIO interaction example.
+
+**Features:**
+- UART command interface
+- GPIO state control from serial input
+- Uses the same PA24/PA27 UART mapping as the echo example
+
+**Location:** `uart/gpio_control/`
+
+### i2c/i2c_scanner
+I2C bus scanner with UART logging.
+
+**Features:**
+- Scans 7-bit I2C addresses from `0x08` to `0x77`
+- Reports discovered devices over UART
+- Highlights the PA1 / NRST caveat for I2C use
+
+**Location:** `i2c/i2c_scanner/`
+
+### gpio/nrst_demo
+Reference documentation for using PA1 when NRST is enabled by default.
+
+**Features:**
+- Explains how to disable NRST in software
+- Documents how NRST is restored on power-on reset
+
+**Location:** `gpio/nrst_demo/`
 
 ## Building
 
-Each example builds independently:
+Each example currently builds independently using its local `Makefile`:
 
 ```bash
-cd examples/[CATEGORY]/[EXAMPLE]/
-make
+cd examples/[category]/[example]
+make clean && make
 ```
+
+The main project template uses CMake + Ninja. These standalone examples have not yet been migrated to CMake presets.
 
 ## Flashing
 
@@ -88,8 +119,10 @@ make clean
 5. Document in `README.md`
 6. Add entry to this file
 
+Use lowercase directory names to match the current repository layout.
+
 ## Notes
 
-- All Makefiles automatically search for SDK at `../../../../mspm0-sdk/`
+- Example Makefiles automatically search for SDK at `../../../../mspm0-sdk/`
 - Examples share the same linker script and startup code
 - Hardware configuration is modularized in `libs/config/`

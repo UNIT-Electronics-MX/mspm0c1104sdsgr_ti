@@ -46,3 +46,7 @@ void SYSCFG_DL_SYSCTL_init(void)
 2. **Espera** 10 segundos
 3. **Reconecta** la alimentación  
 4. **Flashea inmediatamente** un código SIN `DL_SYSCTL_disableNRSTPin()`
+
+## Build
+
+Este directorio es principalmente documental. Si agregas firmware de prueba aquí, sigue la misma estructura de los demás ejemplos en `examples/`.
